@@ -29,3 +29,16 @@ if __name__ == '__main__':
     assert parse_cookie('') == {}
     assert parse_cookie('name=Dima;age=28;') == {'name': 'Dima', 'age': '28'}
     assert parse_cookie('name=Dima=User;age=28;') == {'name': 'Dima=User', 'age': '28'}
+    assert parse_cookie('second_name=Ivanovich;') == {'second_name': 'Ivanovich'}
+    assert parse_cookie('surname=Petrov;') == {'surname': 'Petrov'}
+    assert parse_cookie('e-mail=example@gmail.com;') == {'e-mail': 'example@gmail.com'}
+    assert parse_cookie('main_site=https://example_super.com/;') == {'main_site': 'https://example_super.com/'}
+    assert parse_cookie('birthday_day=30;') == {'birthday_day': '30'}
+    assert parse_cookie('birthday_month=06;') == {'birthday_month': '06'}
+    assert parse_cookie('language=Ukrainian;') == {'language': 'Ukrainian'}
+    assert parse_cookie('font_size=12;') == {'font_size': '12'}
+    assert parse_cookie('font_type=helvetica;') == {'font_type': 'helvetica'}
+    assert parse_cookie('currency=UAH;') == {'currency': 'UAH'}
+
+
+
