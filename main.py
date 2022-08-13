@@ -1,27 +1,52 @@
 def parse(query: str) -> dict:
-    return {}
+    parse_url = {}
+    if "?" in query:
+        params = query.split("?", 1)[-1]
+        if "&" in params:
+            for i in params.split("&"):
+                if i and "=" in i and i.split("=", 1)[0]:
+                    parse_url[i.split('=', 1)[0]] = i.split('=', 1)[1]
+        else:
+            if "=" in params:
+                params.split("=", 1)
+                if params.split("=", 1)[0] and params.split("=", 1)[1]:
+                    parse_url[params.split('=', 1)[0]] = params.split("=", 1)[1]
+    return parse_url
 
 
 if __name__ == '__main__':
-    assert parse('https://example.com/path/to/page?name=ferret&color=purple') == {'name': 'ferret', 'color': 'purple'}
-    assert parse('https://example.com/path/to/page?name=ferret&color=purple&') == {'name': 'ferret', 'color': 'purple'}
-    assert parse('http://example.com/') == {}
-    assert parse('http://example.com/?') == {}
-    assert parse('http://example.com/?name=Dima') == {'name': 'Dima'}
-    assert parse('https://example.com/path/to/page_1?password=123456&login=hello') == {'password': '123456', 'login': 'hello'}
-    assert parse('https://example.com/path/to/page_2?age=30') == {'age': '30'}
-    assert parse('https://example.com/path/to/page_3?city=Kiev') == {'city': 'Kiev'}
-    assert parse('https://example.com/path/to/page_4?street=Khreshchatyk') == {'street': 'Khreshchatyk'}
-    assert parse('https://example.com/path/to/page_5?number_house=8A') == {'number_house': '8A'}
-    assert parse('https://example.com/path/to/page_6?number_flat=42') == {'number_flat': '42'}
-    assert parse('https://example.com/path/to/page_7?credit_card_number=5265585987451231') == {'credit_card_number': '5265585987451231'}
-    assert parse('https://example.com/path/to/page_8?validity_month=12&validity_year=2026') == {'validity_month': '12', "validity_year": "2026"}
-    assert parse('https://example.com/path/to/page_9?CVV=232') == {'CVV': '232'}
-    assert parse('https://example.com/path/to/page_10?poscode=326548') == {'poscode': '326548'}
+     assert parse('https://example.com/path/to/page?name=ferret&color=purple') == {'name': 'ferret', 'color': 'purple'}
+     assert parse('https://example.com/path/to/page?name=ferret&color=purple&') == {'name': 'ferret', 'color': 'purple'}
+     assert parse('http://example.com/') == {}
+     assert parse('http://example.com/?') == {}
+     assert parse('http://example.com/?name=Dima') == {'name': 'Dima'}
+     assert parse('http://example.com/?name=?&color=?') == {'name': '?', 'color': '?'}
+     assert parse('https://example.com/path/to/page?name=ferret&color=purple&model=pxp2') == {'name': 'ferret',
+                                                                                              'color': 'purple',
+                                                                                              'model': 'pxp2'}
+     assert parse('http://example.com/?name=') == {}
+     assert parse('http://example.com/?&') == {}
+     assert parse('https://example.com/path/to/page?color=color') == {'color': 'color'}
+     assert parse('https://example.com/path/to/page?name=color') == {'name': 'color'}
+     assert parse('https://example.com/path/to/page?color') == {}
+     assert parse('https://example.com/path/to/page?=') == {}
+     assert parse('https://example.com/path/to/page?=?&') == {}
+     assert parse('https://example.com/path/to/page?name==color') == {'name': '=color'}
+     assert parse('https://example.com/path/to/page?name=ferret&color=purple&model=pxp2&year=2010') == {'name': 'ferret',
+                                                                                              'color': 'purple',
+                                                                                              'model': 'pxp2',
+                                                                                              'year': '2010'
+                                                                                              }
 
 
 def parse_cookie(query: str) -> dict:
-    return {}
+    cookie = {}
+    if query.split(";"):
+        for i in query.split(";"):
+            if i and "=" in i:
+                if i.split("=", 1)[1] and i.split("=", 1)[0]:
+                    cookie[i.split("=", 1)[0]] = i.split("=", 1)[1]
+    return cookie
 
 
 if __name__ == '__main__':
@@ -29,16 +54,19 @@ if __name__ == '__main__':
     assert parse_cookie('') == {}
     assert parse_cookie('name=Dima;age=28;') == {'name': 'Dima', 'age': '28'}
     assert parse_cookie('name=Dima=User;age=28;') == {'name': 'Dima=User', 'age': '28'}
-    assert parse_cookie('second_name=Ivanovich;') == {'second_name': 'Ivanovich'}
-    assert parse_cookie('surname=Petrov;') == {'surname': 'Petrov'}
-    assert parse_cookie('e-mail=example@gmail.com;') == {'e-mail': 'example@gmail.com'}
-    assert parse_cookie('main_site=https://example_super.com/;') == {'main_site': 'https://example_super.com/'}
-    assert parse_cookie('birthday_day=30;') == {'birthday_day': '30'}
-    assert parse_cookie('birthday_month=06;') == {'birthday_month': '06'}
-    assert parse_cookie('language=Ukrainian;') == {'language': 'Ukrainian'}
-    assert parse_cookie('font_size=12;') == {'font_size': '12'}
-    assert parse_cookie('font_type=helvetica;') == {'font_type': 'helvetica'}
-    assert parse_cookie('currency=UAH;') == {'currency': 'UAH'}
-
-
-
+    assert parse_cookie('name=Dima;age=28=;') == {'name': 'Dima', 'age': '28='}
+    assert parse_cookie('name==Dima;age=28;') == {'name': '=Dima', 'age': '28'}
+    assert parse_cookie('name=Dima;age=28;gender=male') == {'name': 'Dima',
+                                                            'age': '28',
+                                                            'gender': 'male'}
+    assert parse_cookie('name=Dima;age=28;gender=male;profession=programmer') == {'name': 'Dima',
+                                                            'age': '28',
+                                                            'gender': 'male',
+                                                            'profession': 'programmer'}
+    assert parse_cookie('name=;age=28;') == {'age': '28'}
+    assert parse_cookie('name=age=28;age=') == {'name': 'age=28'}
+    assert parse_cookie('name=age28;age=') == {'name': 'age28'}
+    assert parse_cookie('name=;age=') == {}
+    assert parse_cookie('name=Di=ma;age=') == {'name': 'Di=ma'}
+    assert parse_cookie('name=name;age=age') == {'name': 'name', 'age': 'age'}
+    assert parse_cookie('name=name;age=age;=name') == {'name': 'name', 'age': 'age'}
